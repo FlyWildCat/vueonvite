@@ -1,46 +1,54 @@
 <template>
-  <h2>Домашнее задание №1</h2>
+  <h2>Домашнее задание №2</h2>
   <div>
-    <h2>Работа с счётчиком</h2>
-    <p>Счётчик: {{ count }}</p>
-    <button @click="count++">увеличить</button>
+    <h2>Список пользователей</h2>
+    <button @click="toggleListVisibility">{{ listVisible ? 'Скрыть' : 'Показать' }} список</button>
+
+    <ul v-show="listVisible">
+      <li v-for="user in users" :key="user.id" @mouseenter="onMouseEnter(user)" @mouseleave="onMouseLeave"
+        :class="{ highlighted: isUserSelected(user) }">
+        {{ user.name }}
+        <span v-show="isUserSelected(user)">({{ user.age }})</span>
+      </li>
+    </ul>
   </div>
-  <div>
-    <h2>Пример ссылки</h2>
-    <a :href="url" target="_blank">Ссылка на сайт</a>
-  </div>
-  <div>
-    <h2>Пример style</h2>
-    <div :style="{ backgroundColor: bColor, color: 'white' }">can be text</div>
-  </div>
-  <div>
-    <h2>Пример v-if</h2>
-    <div v-if="reg">can be text1</div>
-    <div v-else-if="reg === undefined">can be text3</div>
-    <div v-else>can be text2</div>
-  </div>
-  <div>
-    <h2>Пример mousemove</h2>
-    <div @mousemove="handleMouseMove">
-      <p>{{ x }} {{ y }}</p>
-      <p>{{ y }} {{ x }}</p>
-    </div>
-  </div>
+
 </template>
 
 <script setup>
 import { ref } from 'vue'
-const count = ref(0)
-const url = ref("https:\\vuejs.org")
-const bColor = ref('gray')
-const reg = ref(true)
-const x = ref(0)
-const y = ref(0)
-const handleMouseMove = (e) => {
-  x.value = e.pageX
-  y.value = e.pageY
+const users = ref([
+  { id: 1, name: 'Анна', age: 28 },
+  { id: 2, name: 'Михаил', age: 32 },
+  { id: 3, name: 'Елена', age: 24 },
+  { id: 4, name: 'Дмитрий', age: 30 }
+]);
+
+const listVisible = ref(true);
+let selectUserId = ref(null); // Текущий выделенный элемент
+
+function onMouseEnter(user) {
+  selectUserId.value = user.id;
+}
+
+function onMouseLeave() {
+  selectUserId.value = null;
+}
+
+function isUserSelected(user) {
+  return selectUserId.value === user.id;
+}
+
+function toggleListVisibility() {
+  listVisible.value = !listVisible.value;
 }
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.highlighted {
+  color: red;
+  background-color: bisque;
+  font-weight: bold;
+}
+</style>
